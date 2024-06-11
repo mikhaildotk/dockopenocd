@@ -32,4 +32,4 @@ COPY --from=builder /opt/ /opt/
 ENV PATH="${PATH}:/opt/openocd/bin"
 EXPOSE 4444/tcp
 EXPOSE 6666/tcp
-CMD [ "openocd", "-f", "interface/dummy.cfg" ]
+CMD [ "openocd", "-f", "interface/dummy.cfg", "-c", "bindto 0.0.0.0" ]
