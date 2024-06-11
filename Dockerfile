@@ -1,4 +1,5 @@
-FROM debian
+# Builder stage
+FROM debian AS builder
 LABEL maintainer="kapranov.m@gmail.com"
 RUN apt update  &&  apt install -y \
         bash \
@@ -31,3 +32,9 @@ RUN echo "alias run='git clone git://git.code.sf.net/p/openocd/code . \
         --enable-dummy \
         && make \
         && make install'" >> $HOME/.bashrc
+CMD /bin/bash
+
+# Application stage
+FROM debian AS app
+COPY --from=builder /opt/ /opt/
+CMD /bin/sh
