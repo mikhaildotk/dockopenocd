@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 # Builder stage
 FROM debian AS builder
 LABEL maintainer="kapranov.m@gmail.com"
