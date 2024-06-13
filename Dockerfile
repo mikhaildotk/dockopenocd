@@ -2,6 +2,8 @@
 # Builder stage
 FROM debian AS builder
 LABEL maintainer="kapranov.m@gmail.com"
+LABEL website="https://blog.halfwave.ru"
+LABEL description="Тестовая сборка OpenOCD"
 ENV BUILDFUTURE="--enable-ftdi --enable-ft232r --enable-dummy"
 RUN apt update  &&  apt install -y \
         bash \
@@ -17,6 +19,7 @@ RUN apt update  &&  apt install -y \
 RUN mkdir -p /usr/src/openocd
 WORKDIR /usr/src/openocd
 RUN git clone git://git.code.sf.net/p/openocd/code .
+#ADD git://git.code.sf.net/p/openocd/code .
 RUN ./bootstrap && ./configure \
         --prefix=/opt/openocd \
 	$BUILDFUTURE
