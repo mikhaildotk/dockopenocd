@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.2
+#syntax=docker/dockerfile:1.2
 # Builder stage
 FROM debian AS builder
 ENV BUILDFUTURE="--enable-ftdi --enable-ft232r --enable-dummy"
