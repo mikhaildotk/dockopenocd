@@ -1,25 +1,24 @@
-# syntax=docker/dockerfile:1
+# syntax=docker/dockerfile:1.2
 # Builder stage
 FROM debian AS builder
-LABEL maintainer="kapranov.m@gmail.com"
-LABEL website="https://blog.halfwave.ru"
-LABEL description="Тестовая сборка OpenOCD"
 ENV BUILDFUTURE="--enable-ftdi --enable-ft232r --enable-dummy"
-RUN apt update  &&  apt install -y \
+RUN \
+        --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
+        --mount=target=/var/cache/apt,type=cache,sharing=locked \
+        rm -f /etc/apt/apt.conf.d/docker-clean ; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache \
+        && apt update  &&  apt install -y \
+        autoconf \
+        automake \
         bash \
         git \
         make \
         libtool \
         pkg-config \
-        autoconf \
-        automake \
         texinfo \
         libusb-1.0-0-dev \
         && rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /usr/src/openocd
+RUN git clone git://git.code.sf.net/p/openocd/code /usr/src/openocd
 WORKDIR /usr/src/openocd
-RUN git clone git://git.code.sf.net/p/openocd/code .
-#ADD git://git.code.sf.net/p/openocd/code .
 RUN ./bootstrap && ./configure \
         --prefix=/opt/openocd \
 	$BUILDFUTURE
@@ -28,7 +27,9 @@ CMD /bin/bash
 
 # Application stage
 FROM debian AS app
-LABEL maintainer="kapranov.m@gmail.com"
+LABEL maintainer="kapranov.m@gmail.com" \
+        website="https://blog.halfwave.ru" \
+        description="Тестовая сборка OpenOCD"
 RUN apt update  &&  apt install -y \
         libusb-1.0-0 \
         && rm -rf /var/lib/apt/lists/*
